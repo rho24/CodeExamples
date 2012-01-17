@@ -1,22 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
+using CodeExamples.App_Start;
+using WebActivator;
 
-namespace CodeExamples
+[assembly: PreApplicationStartMethod(typeof (MvcBootstrapper), "Start")]
+
+namespace CodeExamples.App_Start
 {
-    // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
-    // visit http://go.microsoft.com/?LinkId=9394801
-
-    public class MvcApplication : System.Web.HttpApplication
+    public static class MvcBootstrapper
     {
+        public static void Start() {
+            AutoFacBootstrapper.Start();
+
+            MvcSetup();
+        }
+
+        private static void MvcSetup() {
+            RegisterGlobalFilters(GlobalFilters.Filters);
+            RegisterRoutes(RouteTable.Routes);
+        }
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
         }
-
+        
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
@@ -27,14 +35,6 @@ namespace CodeExamples
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
 
-        }
-
-        protected void Application_Start()
-        {
-            AreaRegistration.RegisterAllAreas();
-
-            RegisterGlobalFilters(GlobalFilters.Filters);
-            RegisterRoutes(RouteTable.Routes);
         }
     }
 }
