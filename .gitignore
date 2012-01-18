@@ -53,3 +53,5 @@ _ReSharper*/
 #Logs
 *.Log
 *.InstallLog
+
+CodeExamples/CodeExamples.Publish.xml
