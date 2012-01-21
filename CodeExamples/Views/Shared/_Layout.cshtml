@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Reflection
+@using CodeExamples.App_Start
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -9,5 +11,8 @@
 </head>
 <body>
     @RenderBody()
+    <section class="footer">
+        Build: @Assembly.GetAssembly(typeof(MvcBootstrapper)).GetName().Version
+    </section>
 </body>
 </html>
