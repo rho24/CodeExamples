@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using CodeExamples.Model;
+using MarkdownDeep;
 
 namespace CodeExamples.App_Start
 {
@@ -26,7 +27,10 @@ namespace CodeExamples.App_Start
         }
 
         public static void RegisterServices(ContainerBuilder builder) {
+            builder.RegisterType<Markdown>();
+            
             builder.RegisterType<RawHtmlConverter>().Keyed<IMarkupConverter>(typeof (RawMarkUp));
+            builder.RegisterType<MarkDownConverter>().Keyed<IMarkupConverter>(typeof (MarkDownMarkUp));
         }
     }
 }
