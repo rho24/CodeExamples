@@ -2,12 +2,13 @@
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
+using CodeExamples.Model;
 
 namespace CodeExamples.App_Start
 {
     public static class AutoFacBootstrapper
     {
-        public static void Start() {
+        public static IContainer Start() {
             var builder = new ContainerBuilder();
 
             RegisterControllers(builder);
@@ -16,12 +17,16 @@ namespace CodeExamples.App_Start
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            return container;
         }
 
         private static void RegisterControllers(ContainerBuilder builder) {
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
         }
 
-        public static void RegisterServices(ContainerBuilder builder) {}
+        public static void RegisterServices(ContainerBuilder builder) {
+            builder.RegisterType<RawHtmlConverter>().Keyed<IMarkupConverter>(typeof (RawMarkUp));
+        }
     }
 }

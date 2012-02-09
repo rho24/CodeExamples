@@ -10,7 +10,8 @@ namespace CodeExamples.App_Start
     public static class MvcBootstrapper
     {
         public static void Start() {
-            AutoFacBootstrapper.Start();
+            var container = AutoFacBootstrapper.Start();
+            AutoMapperBootstrapper.Configure(container);
 
             MvcSetup();
         }
@@ -20,21 +21,18 @@ namespace CodeExamples.App_Start
             RegisterRoutes(RouteTable.Routes);
         }
 
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
+        public static void RegisterGlobalFilters(GlobalFilterCollection filters) {
             filters.Add(new HandleErrorAttribute());
         }
-        
-        public static void RegisterRoutes(RouteCollection routes)
-        {
+
+        public static void RegisterRoutes(RouteCollection routes) {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
-            );
-
+                new {controller = "Home", action = "Index", id = UrlParameter.Optional} // Parameter defaults
+                );
         }
     }
 }
