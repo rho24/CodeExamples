@@ -2,17 +2,22 @@
 @using CodeExamples.App_Start
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>@(ViewBag.Title == null ? "Code Examples" : "Code Examples - {0}".Fmt((string)ViewBag.Title))</title>
-    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/modernizr-2.0.6-development-only.js")" type="text/javascript"></script>
-</head>
-<body>
-    @RenderBody()
-    <section class="footer">
-        Build: @Assembly.GetAssembly(typeof(MvcBootstrapper)).GetName().Version
-    </section>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>@(ViewBag.Title == null ? "Code Examples" : "Code Examples - {0}".Fmt((string) ViewBag.Title))</title>
+        <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script>
+        <script src="@Url.Content("~/Scripts/modernizr-2.0.6-development-only.js")" type="text/javascript"> </script>
+    </head>
+    <body>
+        <section class="header">
+            <a href="@Url.Action("Index", "Home")">
+                <h1>Code Examples</h1>
+            </a>
+        </section>
+        @RenderBody()
+        <section class="footer">
+            Build: @Assembly.GetAssembly(typeof (MvcBootstrapper)).GetName().Version
+        </section>
+    </body>
 </html>

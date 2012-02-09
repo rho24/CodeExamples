@@ -4,7 +4,14 @@
     ViewBag.Title = Model.Title;
 }
 
-<h2>@Model.Title</h2>
+<h1>@Model.Title</h1>
 <section>
     @Model.Body
+</section>
+<section>
+    @Html.ActionLink("Edit", "Edit", new {Model.Id})
+    @using (Html.BeginForm("Delete", "Example", new {Model.Id})) {
+        @Html.AntiForgeryToken()
+        <input type="submit" value="Delete"/>
+    }
 </section>

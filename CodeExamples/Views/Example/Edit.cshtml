@@ -1,0 +1,13 @@
+﻿
+@model ExampleDetailEM
+
+@{
+    ViewBag.Title = "Edit Example";
+}
+
+<h2>Create Example</h2>
+@using(Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.EditorForModel()
+    <input type="submit" value="Save" />
+}

@@ -4,6 +4,7 @@ using Autofac;
 using Autofac.Integration.Mvc;
 using CodeExamples.Model;
 using MarkdownDeep;
+using Raven.Client.Document;
 
 namespace CodeExamples.App_Start
 {
@@ -28,7 +29,12 @@ namespace CodeExamples.App_Start
 
         public static void RegisterServices(ContainerBuilder builder) {
             builder.RegisterType<Markdown>();
-            
+            builder.RegisterType<TitleCreater>();
+
+            var documentStore = new DocumentStore {ConnectionStringName = "RavenDB"};
+            documentStore.Initialize();
+            builder.Register(c => documentStore.OpenSession());
+
             builder.RegisterType<RawHtmlConverter>().Keyed<IMarkupConverter>(typeof (RawMarkUp));
             builder.RegisterType<MarkDownConverter>().Keyed<IMarkupConverter>(typeof (MarkDownMarkUp));
         }

@@ -1,7 +1,16 @@
-﻿@model dynamic
+﻿@model HomeIndexVM
 
 <h2>Hello World!</h2>
 
 <p>First proper automatic deploy!</p>
 
-@Html.ActionLink("Example 1", "Detail", "Example", new {id = 1}, null)
+<section>
+    <h3>Examples</h3>
+    <ul>
+        @foreach (var example in Model.Examples) {
+            <li>@Html.ActionLink(example.Title, "Detail", "Example", new {example.Id}, null)</li>
+        }
+    </ul>
+</section>
+
+@Html.ActionLink("Create Example", "Create", "Example")
