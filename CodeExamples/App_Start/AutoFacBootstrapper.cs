@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Configuration;
+using System.Reflection;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
@@ -32,6 +33,9 @@ namespace CodeExamples.App_Start
             builder.RegisterType<TitleCreater>();
 
             var documentStore = new DocumentStore {ConnectionStringName = "RavenDB"};
+            var apiKey = ConfigurationManager.AppSettings["RavenDB-ApiKey"];
+            if (apiKey != null)
+                documentStore.ApiKey = apiKey;
             documentStore.Initialize();
             builder.Register(c => documentStore.OpenSession());
 
