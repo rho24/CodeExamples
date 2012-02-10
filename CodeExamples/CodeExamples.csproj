@@ -114,6 +114,7 @@
     <Compile Include="App_Start\AutoFacBootstrapper.cs" />
     <Compile Include="App_Start\AutoMapperBootstrapper.cs" />
     <Compile Include="App_Start\MvcBootstrapper.cs" />
+    <Compile Include="App_Start\NlogErrorHandlerModule.cs" />
     <Compile Include="Controllers\ExampleController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Infrastructure\Extensions.cs" />
