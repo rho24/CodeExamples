@@ -10,7 +10,7 @@ namespace CodeExamples.ViewModels
 
         public class Example
         {
-            public string Id { get; set; }
+            public string TitleUrl { get; set; }
             public string Title { get; set; }
         }
 

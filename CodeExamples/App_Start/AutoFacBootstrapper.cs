@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
+using CodeExamples.Infrastructure;
 using CodeExamples.Model;
 using MarkdownDeep;
 using NLog;
@@ -31,7 +32,7 @@ namespace CodeExamples.App_Start
 
         public static void RegisterServices(ContainerBuilder builder) {
             builder.RegisterType<Markdown>();
-            builder.RegisterType<TitleCreater>();
+            builder.RegisterType<TitleCreator>();
             
             var documentStore = new DocumentStore {ConnectionStringName = "RavenDB"};
             var apiKey = ConfigurationManager.AppSettings["RavenDB-ApiKey"];

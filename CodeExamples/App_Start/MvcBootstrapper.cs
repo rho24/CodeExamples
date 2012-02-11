@@ -27,6 +27,12 @@ namespace CodeExamples.App_Start
 
         public static void RegisterRoutes(RouteCollection routes) {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            
+            routes.MapRoute(
+                "Example", // Route name
+                "Example/{action}/{titleUrl}", // URL with parameters
+                new {controller = "Example", action = "Detail"} // Parameter defaults
+                );
 
             routes.MapRoute(
                 "Default", // Route name

@@ -8,7 +8,7 @@
     <h3>Examples</h3>
     <ul>
         @foreach (var example in Model.Examples) {
-            <li>@Html.ActionLink(example.Title, "Detail", "Example", new {example.Id}, null)</li>
+            <li>@Html.ActionLink(example.Title, "Detail", "Example", new {example.TitleUrl}, null)</li>
         }
     </ul>
 </section>

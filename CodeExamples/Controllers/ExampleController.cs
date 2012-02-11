@@ -2,29 +2,24 @@
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using CodeExamples.Infrastructure;
 using CodeExamples.Model;
 using CodeExamples.ViewModels;
 using Raven.Client;
 
 namespace CodeExamples.Controllers
 {
-    public class ExampleController : Controller
+    public class ExampleController : RavenControllerBase
     {
-        private readonly Lazy<IDocumentSession> _session;
+        public ExampleController(Lazy<IDocumentSession> lazySession) : base(lazySession) {}
 
-        public ExampleController(Lazy<IDocumentSession> session) {
-            _session = session;
-        }
+        public ActionResult Detail(string titleUrl) {
+            var detail = Session.Query<ExampleDetail>().SingleOrDefault(d => d.TitleUrl == titleUrl);
 
-        public ActionResult Detail(string id) {
-            using (var session = _session.Value) {
-                var detail = session.Query<ExampleDetail>().SingleOrDefault(d => d.Id == id);
+            if (detail == null)
+                return HttpNotFound("Could not find example");
 
-                if (detail == null)
-                    return HttpNotFound("Could not find example");
-
-                return View(Mapper.Map<ExampleDetailVM>(detail));
-            }
+            return View(Mapper.Map<ExampleDetailVM>(detail));
         }
 
         public ActionResult Create() {
@@ -33,58 +28,50 @@ namespace CodeExamples.Controllers
 
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Create(ExampleDetailEM editModel) {
-            using (var session = _session.Value) {
-                var detail = Mapper.Map<ExampleDetail>(editModel);
+            if (!ModelState.IsValid)
+                return View("Edit");
 
-                if (!ModelState.IsValid)
-                    return View("Edit");
+            var detail = Mapper.Map<ExampleDetail>(editModel);
 
-                session.Store(detail);
-                session.SaveChanges();
+            Session.Store(detail);
+            Session.SaveChanges();
 
-                return RedirectToAction("Detail", new {id = detail.Id});
-            }
+            return RedirectToAction("Detail", new {id = detail.TitleUrl});
         }
 
-        public ActionResult Edit(string id) {
-            using (var session = _session.Value) {
-                var detail = session.Query<ExampleDetail>().SingleOrDefault(d => d.Id == id);
+        public ActionResult Edit(string titleUrl) {
+            var detail = Session.Query<ExampleDetail>().SingleOrDefault(d => d.TitleUrl == titleUrl);
 
-                if (detail == null)
-                    return HttpNotFound("Could not find example");
+            if (detail == null)
+                return HttpNotFound("Could not find example");
 
-                return View(Mapper.Map<ExampleDetailEM>(detail));
-            }
+            return View(Mapper.Map<ExampleDetailEM>(detail));
         }
 
 
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult Edit(string id, ExampleDetailEM editModel) {
-            using (var session = _session.Value) {
-                var detail = session.Query<ExampleDetail>().SingleOrDefault(d => d.Id == id);
+        public ActionResult Edit(string titleUrl, ExampleDetailEM editModel) {
+            if (!ModelState.IsValid)
+                return View("Edit");
 
-                Mapper.Map(editModel, detail);
+            var detail = Session.Query<ExampleDetail>().SingleOrDefault(d => d.TitleUrl == titleUrl);
 
-                if (!ModelState.IsValid)
-                    return View("Edit");
+            Mapper.Map(editModel, detail);
 
-                session.Store(detail);
-                session.SaveChanges();
 
-                return RedirectToAction("Detail", new {id = detail.Id});
-            }
+            Session.SaveChanges();
+
+            return RedirectToAction("Detail", new {id = detail.TitleUrl});
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult Delete(string id) {
-            using (var session = _session.Value) {
-                var detail = session.Query<ExampleDetail>().SingleOrDefault(d => d.Id == id);
+        public ActionResult Delete(string titleUrl) {
+            var detail = Session.Query<ExampleDetail>().SingleOrDefault(d => d.TitleUrl == titleUrl);
 
-                session.Delete(detail);
-                session.SaveChanges();
+            Session.Delete(detail);
+            Session.SaveChanges();
 
-                return RedirectToAction("Index", "Home");
-            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }

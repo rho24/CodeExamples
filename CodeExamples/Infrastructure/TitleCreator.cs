@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 
-namespace CodeExamples.Model
+namespace CodeExamples.Infrastructure
 {
-    public class TitleCreater
+    public class TitleCreator
     {
         public string CreateFromTitle(string title) {
             return Regex.Replace(title, "[^a-zA-Z0-9]", "_");

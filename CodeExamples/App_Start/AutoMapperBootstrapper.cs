@@ -3,6 +3,7 @@ using System.Web;
 using AutoMapper;
 using Autofac;
 using Autofac.Features.Indexed;
+using CodeExamples.Infrastructure;
 using CodeExamples.Model;
 using CodeExamples.ViewModels;
 
@@ -23,10 +24,12 @@ namespace CodeExamples.App_Start
             Mapper.CreateMap<ExampleDetail, ExampleDetailEM>()
                 .ForMember(dest => dest.Markdown, opt => opt.MapFrom(src => ((MarkDownMarkUp) src.Body).Markdown));
 
-            var titleCreater = container.Resolve<TitleCreater>();
+            var creator = container.Resolve<TitleCreator>();
             Mapper.CreateMap<ExampleDetailEM, ExampleDetail>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => titleCreater.CreateFromTitle(src.Title)))
-                .ForMember(dest => dest.Body, opt => opt.MapFrom(src => new MarkDownMarkUp {Markdown = src.Markdown}));
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.TitleUrl, opt => opt.MapFrom(src => creator.CreateFromTitle(src.Title)))
+                .ForMember(dest => dest.Body, opt => opt.MapFrom(src => new MarkDownMarkUp {Markdown = src.Markdown}))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
             Mapper.AssertConfigurationIsValid();
         }

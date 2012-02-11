@@ -1,6 +1,7 @@
 using System.Web;
+using CodeExamples.Model;
 
-namespace CodeExamples.Model
+namespace CodeExamples.Infrastructure
 {
     public class RawHtmlConverter : IMarkupConverter
     {

@@ -1,4 +1,4 @@
-namespace CodeExamples.Model
+namespace CodeExamples.Infrastructure
 {
     public class RawMarkUp : IMarkup
     {

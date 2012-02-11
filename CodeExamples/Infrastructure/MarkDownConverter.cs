@@ -1,7 +1,8 @@
 using System.Web;
+using CodeExamples.Model;
 using MarkdownDeep;
 
-namespace CodeExamples.Model
+namespace CodeExamples.Infrastructure
 {
     public class MarkDownConverter : IMarkupConverter
     {

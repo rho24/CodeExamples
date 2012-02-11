@@ -9,8 +9,8 @@
     @Model.Body
 </section>
 <section>
-    @Html.ActionLink("Edit", "Edit", new {Model.Id})
-    @using (Html.BeginForm("Delete", "Example", new {Model.Id})) {
+    @Html.ActionLink("Edit", "Edit", new {Model.TitleUrl})
+    @using (Html.BeginForm("Delete", "Example", new {Model.TitleUrl})) {
         @Html.AntiForgeryToken()
         <input type="submit" value="Delete"/>
     }
