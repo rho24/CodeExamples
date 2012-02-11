@@ -14,7 +14,7 @@ namespace CodeExamples.Controllers
         public HomeController(Lazy<IDocumentSession> lazySession) : base(lazySession) {}
 
         public ActionResult Index() {
-            var examples = Session.Query<ExampleDetail>().ToArray();
+            var examples = Session.Query<Example>().ToArray();
             return View(Mapper.Map<HomeIndexVM>(examples));
         }
     }
