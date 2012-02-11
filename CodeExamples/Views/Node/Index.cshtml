@@ -1,16 +1,50 @@
 ﻿@section Head{
-    <script src="@Url.Content("~/Scripts/underscore.min.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/backbone.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/underscore.min.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Scripts/backbone.min.js")" type="text/javascript"> </script>
+    
     <script type="text/javascript">
         (function ($) {
-
-
             $(function () {
+
+                var NodesView = Backbone.View.extend({
+                    el: $('#nodes'),
+                    render: function (event) {
+                        var that = this;
+                        _(this.model).each(function (n) {
+                            var view = new NodeView({ model: n });
+                            $(that.el).append(view.render().el);
+                        });
+                        return this;
+                    }
+                });
+
+                var NodeView = Backbone.View.extend({
+                    templateId: '#nodeTemplate',
+                    render: function (event) {
+                        var template = _.template($(this.templateId).html());
+                        $(this.el).html(template(this.model));
+                        return this;
+                    }
+                });
+
+                window.App = new NodesView();
+
                 $.post('@Url.Action("Nodes")', function (data) {
-                    nodes = data;
+                    App.model = data;
+
+                    App.render();
                 });
             });
         })(jQuery);
     </script>
 }
+<h2>Site</h2>
+<div id="nodes">
+    <ul>
+        
+    </ul>
+</div>
 
+<script id="nodeTemplate" type="text/x-jquery-tmpl">
+    <li><%-Title%></li>
+</script>
