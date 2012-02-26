@@ -80,10 +80,16 @@ ul.nodes {
     margin: 0 10px;
 }
 
-.node > .title {
-    border: 1px solid #000;
-    border-radius: 10px;
+.node {
     width: 100px;
     padding: 5px;
     margin: 5px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    background-color: greenyellow;
+}
+
+.node .title {
+    padding: 0;
+    margin: 0;
 }
