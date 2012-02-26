@@ -15,11 +15,10 @@ namespace CodeExamples.Controllers
             return View();
         }
 
-        [HttpPost]
         public ActionResult Nodes() {
             var nodes = Session.Query<NodeWithId>("NodeWithId").ToArray();
 
-            return Json(nodes);
+            return Json(nodes, JsonRequestBehavior.AllowGet);
         }
     }
 }

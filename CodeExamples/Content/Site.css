@@ -73,3 +73,17 @@ textarea
 {
     display: none;
 }
+
+ul.nodes {
+    list-style: none;
+    padding: 0;
+    margin: 0 10px;
+}
+
+.node > .title {
+    border: 1px solid #000;
+    border-radius: 10px;
+    width: 100px;
+    padding: 5px;
+    margin: 5px;
+}

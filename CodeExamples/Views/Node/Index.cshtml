@@ -1,29 +1,47 @@
 ﻿@section Head{
     <script src="@Url.Content("~/Scripts/underscore.min.js")" type="text/javascript"> </script>
     <script src="@Url.Content("~/Scripts/backbone.min.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Scripts/handlebars-1.0.0.beta.6.js")" type="text/javascript"> </script>
     
     <script type="text/javascript">
         (function ($) {
             $(function () {
 
                 var NodesView = Backbone.View.extend({
-                    el: $('#nodes'),
                     render: function (event) {
                         var that = this;
-                        _(this.model).each(function (n) {
+                        this.setElement($('#main-node'));
+                        var nodeViews = _.map(this.model, function (n) {
                             var view = new NodeView({ model: n });
-                            $(that.el).append(view.render().el);
+                            return view.render();
                         });
+                        _.chain(nodeViews).filter(function (n) { return n.model.Parent === null && n.model.Before === null; }).each(function (n) { that.$el.append(n.el); });
+
+                        var viewFinder = function (id) {
+                            return _(nodeViews).chain().filter(function (n) { return n.model.Id === id; }).first().value();
+                        };
+                        _(nodeViews).each(function (n) { n.postRender(viewFinder); });
                         return this;
                     }
                 });
 
                 var NodeView = Backbone.View.extend({
                     templateId: '#nodeTemplate',
+                    initialize: function () {
+                        this.postRender = _.bind(this.postRender, this);
+                    },
                     render: function (event) {
-                        var template = _.template($(this.templateId).html());
-                        $(this.el).html(template(this.model));
+                        var template = Handlebars.compile($(this.templateId).html());
+                        this.setElement(template(this.model));
                         return this;
+                    },
+                    postRender: function (viewFinder) {
+                        if (this.model.Before !== null) {
+                            viewFinder(this.model.Before).$el.insertAfter(this.el);
+                        }
+                        else if (this.model.Parent !== null) {
+                            viewFinder(this.model.Parent).$('ul').append(this.el);
+                        }
                     }
                 });
 
@@ -39,12 +57,17 @@
     </script>
 }
 <h2>Site</h2>
-<div id="nodes">
-    <ul>
+<ul id="main-node" class="nodes">
         
-    </ul>
-</div>
+</ul>
 
-<script id="nodeTemplate" type="text/x-jquery-tmpl">
-    <li><%-Title%></li>
+<script id="nodeTemplate" type="text/handlebars-template">
+    <li>
+        <div class="node">
+            <h3 class="title">{{Title}}</h3>
+        </div>
+        <ul class="nodes">
+        
+        </ul>
+    </li>
 </script>
