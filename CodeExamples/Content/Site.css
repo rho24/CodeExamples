@@ -81,8 +81,8 @@ ul.nodes {
 }
 
 .node {
+    height: 40px;
     width: 100px;
-    padding: 5px;
     margin: 5px;
     border: 1px solid #000;
     border-radius: 10px;
@@ -90,6 +90,32 @@ ul.nodes {
 }
 
 .node .title {
-    padding: 0;
-    margin: 0;
+    margin: 5px;
+}
+
+.node .before-drop
+{
+    position: absolute;
+    height: 10px;
+    width: 100px;
+    top: -10px;
+}
+
+.node .child-drop {
+    position: absolute;
+    height: 40px;
+    width: 50px;
+    left: 50px;
+}
+
+.node .after-drop
+{
+    position: absolute;
+    height: 10px;
+    width: 100px;
+    top: 40px;
+}
+
+.drophover {
+    background-color: blueviolet;
 }

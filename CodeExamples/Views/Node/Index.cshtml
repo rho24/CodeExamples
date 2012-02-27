@@ -1,65 +1,85 @@
 ﻿@section Head{
     <script src="@Url.Content("~/Scripts/underscore.min.js")" type="text/javascript"> </script>
-    <script src="@Url.Content("~/Scripts/backbone.min.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Scripts/backbone.js")" type="text/javascript"> </script>
     <script src="@Url.Content("~/Scripts/handlebars-1.0.0.beta.6.js")" type="text/javascript"> </script>
     <script src="@Url.Content("~/Scripts/jquery-ui-1.8.18.custom.min.js")" type="text/javascript"> </script>
     
     <script type="text/javascript">
-        (function ($) {
-            $(function () {
+        (function($) {
+            $(function() {
 
                 var NodesView = Backbone.View.extend({
-                    render: function (event) {
+                    render: function(event) {
                         var that = this;
                         this.setElement($('#main-node'));
-                        this.nodeViews = _.map(this.model, function (n) {
+                        this.nodeViews = _.map(this.model, function(n) {
                             var view = new NodeView({ model: n });
                             return view.render();
                         });
-                        _(this.nodeViews).chain().filter(function (n) { return n.model.Parent === null && n.model.Before === null; }).each(function (n) { that.$el.append(n.el); });
+                        _(this.nodeViews).chain().filter(function(n) { return n.model.Parent === null && n.model.Before === null; }).each(function(n) { that.$el.append(n.el); });
 
-                        var viewFinder = function (id) {
-                            return _(that.nodeViews).chain().filter(function (n) { return n.model.Id === id; }).first().value();
+                        var viewFinder = function(id) {
+                            return _(that.nodeViews).chain().filter(function(n) { return n.model.Id === id; }).first().value();
                         };
-                        _(this.nodeViews).each(function (n) { n.postRender(viewFinder); });
+                        _(this.nodeViews).each(function(n) { n.postRender(viewFinder); });
                         return this;
                     }
                 });
 
                 var NodeView = Backbone.View.extend({
                     templateId: '#nodeTemplate',
-                    initialize: function () {
+                    initialize: function() {
                         _.bindAll(this);
                     },
                     events: {
-                        "dragstop .node": "dropped"
+                        'dragstop .node': 'dropped',
+                        'drop .node > .before-drop': 'beforeDropped',
+                        'drop .node > .child-drop': 'childDropped',
+                        'drop .node > .after-drop': 'afterDropped'
                     },
-                    render: function (event) {
+                    render: function(event) {
                         var template = Handlebars.compile($(this.templateId).html());
                         this.setElement(template(this.model));
-                        this.$('> .node').draggable({ stack: '.node' });
+                        this.$node = this.$('> .node');
+                        this.$node.draggable({ stack: '.node' });
+                        this.$('> .node > .before-drop, > .node > .child-drop, > .node > .after-drop').droppable({ hoverClass: 'drophover' });
                         return this;
                     },
-                    postRender: function (viewFinder) {
+                    postRender: function(viewFinder) {
                         if (this.model.Before !== null) {
                             viewFinder(this.model.Before).$el.insertAfter(this.el);
                         } else if (this.model.Parent !== null) {
                             viewFinder(this.model.Parent).$('ul').append(this.el);
                         }
                     },
-                    dropped: function (evt, ui) {
-                        this.$('> .node').animate({ top: 0, left: 0 }, 'fast');
+                    dropped: function(evt, ui) {
+                        if (this.$node.index(evt.target) < 0)
+                            return;
+                        this.$node.animate({ top: 0, left: 0 }, 'fast');
+                    },
+                    beforeDropped: function(evt, ui) {
+                        if (this.$('> .node > .before-drop').index(evt.target) < 0)
+                            return;
+                        this.$el.before(ui.draggable.css({ top: 0, left: 0 }).parent());
+                    },
+                    childDropped: function(evt, ui) {
+                        if (this.$('> .node > .child-drop').index(evt.target) < 0)
+                            return;
+                        this.$('> ul').append(ui.draggable.css({ top: 0, left: 0 }).parent());
+                    },
+                    afterDropped: function (evt, ui) {
+                        if (this.$('> .node > .after-drop').index(evt.target) < 0)
+                            return;
+                        this.$el.after(ui.draggable.css({ top: 0, left: 0 }).parent());
                     }
                 });
 
                 window.app = new NodesView();
 
-                $.post('@Url.Action("Nodes")', function (data) {
+                $.post('@Url.Action("Nodes")', function(data) {
                     app.model = data;
 
                     app.render();
-
-                    $('.node').draggable();
                 });
             });
         })(jQuery);
@@ -73,6 +93,9 @@
 <script id="nodeTemplate" type="text/handlebars-template">
     <li>
         <div class="node">
+            <div class="before-drop"></div>
+            <div class="child-drop"></div>
+            <div class="after-drop"></div>
             <h3 class="title">{{Title}}</h3>
         </div>
         <ul class="nodes">
